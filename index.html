@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>The Snake Game</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="game-shell">
+
+<div class="made-by">❤️ Made with love by Rachit Sharma ❤️</div>
+
+<div class="topbar">
+
+<div class="left">
+<h1>The Snake Game</h1>
+
+<div class="mode-select">
+<button id="modeClassic" class="btn">Classic</button>
+<button id="modeTime" class="btn">Time Attack</button>
+<button id="levelBtn" class="btn">Difficulty</button>
+<button id="infoBtn" class="btn">Instructions</button>
+</div>
+</div>
+
+<div class="right">
+<div class="scoreboard">
+<div>Score: <span id="score">0</span></div>
+<div>High: <span id="highscore">0</span></div>
+
+<!-- ✅ IMPORTANT FIX -->
+<div id="difficultyContainer">Difficulty: <span id="levelDisplay">Beginner</span></div>
+
+<div id="timer" class="hidden">Time: 60</div>
+</div>
+<button id="muteBtn" class="btn small">🔊</button>
+</div>
+
+</div>
+
+<div class="canvas-area">
+
+<canvas id="gameCanvas"></canvas>
+
+<div id="overlay" class="overlay">
+<div class="overlay-inner">
+<h2>Ready?</h2>
+<p>S = Start | R = Restart | P = Pause</p>
+<button id="startBtn" class="btn">Start</button>
+<button id="restartBtn" class="btn">Restart</button>
+</div>
+</div>
+
+<div id="levelBox" class="overlay hidden">
+<div class="overlay-inner info-dark">
+<h2>Select Difficulty</h2>
+<button class="btn levelSelect" data-level="1">Beginner</button>
+<button class="btn levelSelect" data-level="2">Intermediate</button>
+<button class="btn levelSelect" data-level="3">Advanced</button>
+<br><br>
+<button id="closeLevel" class="btn">Back</button>
+</div>
+</div>
+
+<div id="infoBox" class="overlay hidden">
+<div class="overlay-inner info-dark">
+<h2>Instructions</h2>
+<p>
+Arrow Keys → Move<br>
+S → Start<br>
+R → Restart<br>
+P → Pause<br>
+M → Mute<br><br>
+Classic → Difficulty progression<br>
+Time Attack → Score in 60 seconds
+</p>
+<button id="closeInfo" class="btn">Close</button>
+</div>
+</div>
+
+</div>
+
+<div class="controls-bar">
+S = Start | R = Restart | P = Pause | M = Mute
+</div>
+
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>
