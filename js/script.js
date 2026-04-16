@@ -1,17 +1,31 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-canvas.width = 500;
-canvas.height = 500;
+/* RESPONSIVE CANVAS */
+function resizeCanvas(){
+const size = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.6, 500);
+canvas.width = size;
+canvas.height = size;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 
+/* ELEMENTS */
 const scoreEl = document.getElementById("score");
 const highscoreEl = document.getElementById("highscore");
 const timerEl = document.getElementById("timer");
 const levelDisplay = document.getElementById("levelDisplay");
-
-/* ✅ NEW */
 const difficultyContainer = document.getElementById("difficultyContainer");
 
+/* SOUND */
+const eatSound = new Audio("assets/sounds/food.mp3");
+const gameOverSound = new Audio("assets/sounds/gameover.mp3");
+const bgMusic = new Audio("assets/sounds/music.mp3");
+bgMusic.loop = true;
+
+let isMuted = false;
+
+/* STATE */
 let snake, food, dir, score;
 let running=false, paused=false;
 let lastTime=0;
@@ -20,14 +34,10 @@ let mode="classic";
 let level=1;
 let timeLeft=60;
 
+/* LEVEL */
 function getLevelName(l){
 return l==1?"Beginner":l==2?"Intermediate":"Advanced";
 }
-
-const eatSound = new Audio("assets/sounds/food.mp3");
-const gameOverSound = new Audio("assets/sounds/gameover.mp3");
-const bgMusic = new Audio("assets/sounds/music.mp3");
-bgMusic.loop = true;
 
 function resetGame(){
 snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];
@@ -35,11 +45,9 @@ dir={x:1,y:0};
 score=0;
 timeLeft=60;
 
-if(mode==="classic"){
-speed = level==1?160: level==2?120:80;
-}else{
-speed = 120;
-}
+speed = mode==="classic"
+? (level==1?160:level==2?120:80)
+:120;
 
 placeFood();
 updateScore();
@@ -51,24 +59,28 @@ food={x:Math.floor(Math.random()*25),y:Math.floor(Math.random()*25)};
 }
 
 function draw(){
-ctx.clearRect(0,0,500,500);
+ctx.clearRect(0,0,canvas.width,canvas.height);
+const cell = canvas.width / 25;
 
+/* GRID */
 for(let i=0;i<25;i++){
 for(let j=0;j<25;j++){
 ctx.fillStyle=(i+j)%2?"#d1d5db":"#e5e7eb";
-ctx.fillRect(i*20,j*20,20,20);
+ctx.fillRect(i*cell,j*cell,cell,cell);
 }
 }
 
+/* FOOD */
 ctx.fillStyle="orange";
 ctx.beginPath();
-ctx.arc(food.x*20+10,food.y*20+10,6,0,Math.PI*2);
+ctx.arc(food.x*cell+cell/2,food.y*cell+cell/2,cell/3,0,Math.PI*2);
 ctx.fill();
 
+/* SNAKE */
 snake.forEach((s,i)=>{
 ctx.fillStyle=i==0?"#166534":"#22c55e";
 ctx.beginPath();
-ctx.arc(s.x*20+10,s.y*20+10,8,0,Math.PI*2);
+ctx.arc(s.x*cell+cell/2,s.y*cell+cell/2,cell/2.5,0,Math.PI*2);
 ctx.fill();
 });
 }
@@ -80,7 +92,7 @@ const head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
 
 if(head.x<0||head.y<0||head.x>=25||head.y>=25 ||
 snake.some(s=>s.x===head.x && s.y===head.y)){
-gameOverSound.play();
+if(!isMuted) gameOverSound.play();
 return gameOver();
 }
 
@@ -88,23 +100,9 @@ snake.unshift(head);
 
 if(head.x===food.x && head.y===food.y){
 score++;
-eatSound.play();
+if(!isMuted) eatSound.play();
 placeFood();
 updateScore();
-
-if(mode==="classic"){
-if(level==1 && score>=50){
-level=2;
-resetGame();
-startGame();
-}
-else if(level==2 && score>=75){
-level=3;
-resetGame();
-startGame();
-}
-}
-
 }else{
 snake.pop();
 }
@@ -112,9 +110,7 @@ snake.pop();
 if(mode==="time"){
 timeLeft-=0.1;
 timerEl.textContent="Time: "+Math.floor(timeLeft);
-if(timeLeft<=0){
-gameOver();
-}
+if(timeLeft<=0) gameOver();
 }
 }
 
@@ -136,6 +132,7 @@ hs=score;
 highscoreEl.textContent=hs;
 }
 
+/* KEYBOARD */
 window.addEventListener("keydown",e=>{
 if(e.key==="ArrowUp" && dir.y!==1) dir={x:0,y:-1};
 if(e.key==="ArrowDown" && dir.y!==-1) dir={x:0,y:1};
@@ -145,24 +142,47 @@ if(e.key==="ArrowRight" && dir.x!==-1) dir={x:1,y:0};
 if(e.key==="s") startGame();
 if(e.key==="r") restartGame();
 if(e.key==="p") paused=!paused;
+
+/* MUTE KEY */
+if(e.key==="m"){
+toggleMute();
+}
 });
 
+/* TOUCH CONTROLS */
+let touchStartX=0;
+let touchStartY=0;
+
+canvas.addEventListener("touchstart",e=>{
+touchStartX = e.touches[0].clientX;
+touchStartY = e.touches[0].clientY;
+});
+
+canvas.addEventListener("touchend",e=>{
+let dx = e.changedTouches[0].clientX - touchStartX;
+let dy = e.changedTouches[0].clientY - touchStartY;
+
+if(Math.abs(dx) > Math.abs(dy)){
+if(dx > 0 && dir.x!==-1) dir={x:1,y:0};
+else if(dx < 0 && dir.x!==1) dir={x:-1,y:0};
+}else{
+if(dy > 0 && dir.y!==-1) dir={x:0,y:1};
+else if(dy < 0 && dir.y!==1) dir={x:0,y:-1};
+}
+});
+
+/* GAME CONTROL */
 function startGame(){
 running=true;
 document.getElementById("overlay").classList.add("hidden");
-bgMusic.play();
-
-if(mode==="time"){
-timerEl.classList.remove("hidden");
-}else{
-timerEl.classList.add("hidden");
-}
+if(!isMuted) bgMusic.play();
 }
 
 function restartGame(){
 resetGame();
 running=true;
 document.getElementById("overlay").classList.add("hidden");
+if(!isMuted) bgMusic.play();
 }
 
 function gameOver(){
@@ -171,26 +191,35 @@ document.getElementById("overlay").classList.remove("hidden");
 bgMusic.pause();
 }
 
+/* MUTE FUNCTION */
+function toggleMute(){
+isMuted = !isMuted;
+
+if(isMuted){
+bgMusic.pause();
+}else{
+bgMusic.play();
+}
+}
+
 /* BUTTONS */
+document.getElementById("muteBtn").onclick=toggleMute;
+
 document.getElementById("startBtn").onclick=startGame;
 document.getElementById("restartBtn").onclick=restartGame;
 
-/* ✅ MODE FIXES */
 document.getElementById("modeClassic").onclick=()=>{
 mode="classic";
-document.getElementById("levelBtn").style.display="inline-block";
-difficultyContainer.style.display="block"; /* SHOW */
+difficultyContainer.style.display="block";
 resetGame();
 };
 
 document.getElementById("modeTime").onclick=()=>{
 mode="time";
-document.getElementById("levelBtn").style.display="none";
-difficultyContainer.style.display="none"; /* HIDE */
+difficultyContainer.style.display="none";
 resetGame();
 };
 
-/* LEVEL */
 document.getElementById("levelBtn").onclick=()=>{
 document.getElementById("levelBox").classList.toggle("hidden");
 };
@@ -207,7 +236,6 @@ document.getElementById("levelBox").classList.add("hidden");
 };
 });
 
-/* INFO */
 document.getElementById("infoBtn").onclick=()=>{
 document.getElementById("infoBox").classList.remove("hidden");
 };

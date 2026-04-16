@@ -4,6 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>The Snake Game</title>
+
 <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -14,7 +15,6 @@
 <div class="made-by">❤️ Made with love by Rachit Sharma ❤️</div>
 
 <div class="topbar">
-
 <div class="left">
 <h1>The Snake Game</h1>
 
@@ -30,15 +30,12 @@
 <div class="scoreboard">
 <div>Score: <span id="score">0</span></div>
 <div>High: <span id="highscore">0</span></div>
-
-<!-- ✅ IMPORTANT FIX -->
 <div id="difficultyContainer">Difficulty: <span id="levelDisplay">Beginner</span></div>
-
 <div id="timer" class="hidden">Time: 60</div>
 </div>
+
 <button id="muteBtn" class="btn small">🔊</button>
 </div>
-
 </div>
 
 <div class="canvas-area">
@@ -48,7 +45,10 @@
 <div id="overlay" class="overlay">
 <div class="overlay-inner">
 <h2>Ready?</h2>
-<p>S = Start | R = Restart | P = Pause</p>
+<p>
+Desktop: Arrow Keys | S = Start | R = Restart | P = Pause | M = Mute<br><br>
+Mobile: Swipe to move
+</p>
 <button id="startBtn" class="btn">Start</button>
 <button id="restartBtn" class="btn">Restart</button>
 </div>
@@ -69,22 +69,17 @@
 <div class="overlay-inner info-dark">
 <h2>Instructions</h2>
 <p>
+Desktop:<br>
 Arrow Keys → Move<br>
-S → Start<br>
-R → Restart<br>
-P → Pause<br>
-M → Mute<br><br>
-Classic → Difficulty progression<br>
-Time Attack → Score in 60 seconds
+S → Start | R → Restart | P → Pause | M → Mute<br><br>
+
+Mobile:<br>
+Swipe Up/Down/Left/Right to move
 </p>
 <button id="closeInfo" class="btn">Close</button>
 </div>
 </div>
 
-</div>
-
-<div class="controls-bar">
-S = Start | R = Restart | P = Pause | M = Mute
 </div>
 
 </div>
