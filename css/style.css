@@ -11,22 +11,29 @@ flex-direction:column;
 background:url("../assets/images/bg.jpg") center/cover no-repeat;
 }
 
-/* TOP CENTER TEXT */
+/* =========================
+   MADE BY TEXT (FIXED)
+========================= */
 .made-by{
-position:absolute;
-top:10px;
-left:50%;
-transform:translateX(-50%);
-color:white;
-font-size:18px;
-font-weight:600;
-z-index:10;
+  position:absolute;
+  top:10px;
+  left:0;
+  width:100%;
+  text-align:center;
+  color:white;
+  font-size:clamp(12px, 2.5vw, 18px); /* 🔥 auto responsive */
+  font-weight:600;
+  z-index:10;
+  padding:0 10px;
 }
 
-/* HEADER */
+/* =========================
+   HEADER
+========================= */
 .topbar{
 display:flex;
 justify-content:space-between;
+align-items:center;
 padding:40px 20px 10px;
 color:white;
 flex-wrap:wrap;
@@ -45,6 +52,9 @@ margin-top:10px;
 text-align:right;
 }
 
+/* =========================
+   BUTTONS
+========================= */
 .btn{
 background:#22c55e;
 border:none;
@@ -59,14 +69,16 @@ margin:4px;
 padding:6px 10px;
 }
 
-/* GAME AREA */
+/* =========================
+   GAME AREA
+========================= */
 .canvas-area{
 flex:1;
 display:flex;
 justify-content:center;
 align-items:center;
 position:relative;
-padding-bottom:20px; /* visual balance */
+padding-bottom:20px;
 }
 
 canvas{
@@ -76,7 +88,9 @@ width:min(90vw,500px);
 height:min(90vw,500px);
 }
 
-/* OVERLAY */
+/* =========================
+   OVERLAY
+========================= */
 .overlay{
 position:absolute;
 inset:0;
@@ -102,15 +116,18 @@ background:#000;
 display:none;
 }
 
-/* MOBILE */
+/* =========================
+   MOBILE FIX
+========================= */
 @media(max-width:600px){
+
 .topbar{
 flex-direction:column;
-align-items:flex-start;
+align-items:center; /* 🔥 centered */
 }
 
 .right{
-text-align:left;
+text-align:center;
 margin-top:10px;
 }
 }
